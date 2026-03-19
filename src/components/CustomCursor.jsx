@@ -1,17 +1,24 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 export default function CustomCursor() {
   const dotRef = useRef(null);
   const circleRef = useRef(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Detect desktop (non-touch) on mount — avoids SSR issues
+  useEffect(() => {
+    const hasPointer = window.matchMedia("(pointer: fine)").matches;
+    const isWide = window.innerWidth >= 768;
+    setIsDesktop(hasPointer && isWide);
+  }, []);
 
   useEffect(() => {
-    if (window.innerWidth < 768) return;
+    if (!isDesktop) return;
 
     const dot = dotRef.current;
     const circle = circleRef.current;
 
-    // Use force3D to ensure GPU hardware acceleration for the smoothest possible render
     gsap.set(dot, { xPercent: -50, yPercent: -50, force3D: true });
     gsap.set(circle, { xPercent: -50, yPercent: -50, force3D: true });
 
@@ -19,7 +26,6 @@ export default function CustomCursor() {
     let dotPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     let circlePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-    // Simply capture raw mouse coordinates, deferring mathematical smoothing to the render loop
     const moveCursor = (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
@@ -27,15 +33,10 @@ export default function CustomCursor() {
 
     window.addEventListener("mousemove", moveCursor);
 
-    // Render loop synced exactly to screen refresh rate (reqAnimationFrame)
     const render = () => {
-      // 1. ADDING A TINY BIT OF LERP TO THE DOT ITSELF
-      // This fixes "micro-stuttering" on standard 125Hz office mice or 60Hz screens.
-      // 0.4 feels nearly instant but mathematically smooths out jagged pixel jumps.
       dotPos.x += (mouse.x - dotPos.x) * 0.4;
       dotPos.y += (mouse.y - dotPos.y) * 0.4;
 
-      // 2. KEEPING THE CIRCLE LERP AT 0.15 AS YOU SET IT (perfect for the trailing effect)
       circlePos.x += (mouse.x - circlePos.x) * 0.15;
       circlePos.y += (mouse.y - circlePos.y) * 0.15;
 
@@ -50,14 +51,11 @@ export default function CustomCursor() {
     const onMouseEnter = () => {
       gsap.to(circle, {
         scale: 1.5,
-        backgroundColor: "rgba(245, 245, 220, 0.15)", // subtle fill on hover
+        backgroundColor: "rgba(245, 245, 220, 0.15)",
         duration: 0.3,
         ease: "power2.out"
       });
-      gsap.to(dot, {
-        scale: 0,
-        duration: 0.3
-      });
+      gsap.to(dot, { scale: 0, duration: 0.3 });
     };
 
     const onMouseLeave = () => {
@@ -67,10 +65,7 @@ export default function CustomCursor() {
         duration: 0.3,
         ease: "power2.out"
       });
-      gsap.to(dot, {
-        scale: 1,
-        duration: 0.3
-      });
+      gsap.to(dot, { scale: 1, duration: 0.3 });
     };
 
     links.forEach((link) => {
@@ -86,14 +81,16 @@ export default function CustomCursor() {
         link.removeEventListener("mouseleave", onMouseLeave);
       });
     };
-  }, []);
+  }, [isDesktop]);
+
+  // Render nothing at all on mobile/touch — no stuck dot in the corner
+  if (!isDesktop) return null;
 
   return (
     <>
       <div
         ref={circleRef}
         className="fixed w-10 h-10 rounded-full border border-[var(--color-brand-creme)] opacity-50 pointer-events-none z-[9998]"
-        // Added will-change for browser optimization
         style={{ willChange: "transform" }}
       />
       <div
