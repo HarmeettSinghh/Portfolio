@@ -1,8 +1,43 @@
 import { motion } from 'framer-motion';
 import SectionTitle from '../components/SectionTitle';
 import { FaEnvelope, FaMapMarkerAlt, FaLinkedin, FaGithub } from 'react-icons/fa';
+import { useState } from 'react';
 
 const Contact = () => {
+  const [status, setStatus] = useState(''); // 'loading', 'success', 'error'
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+
+    const formData = new FormData(e.target);
+    // Use the key from .env (which I updated with your new key)
+    formData.append("access_key", import.meta.env.VITE_WEB3FORMS_ACCESS_KEY);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setStatus('success');
+        e.target.reset(); // Clear the form
+        setTimeout(() => setStatus(''), 5000);
+      } else {
+        console.error("Error", data);
+        setStatus('error');
+        setTimeout(() => setStatus(''), 5000);
+      }
+    } catch (error) {
+      console.error("Submit Error", error);
+      setStatus('error');
+      setTimeout(() => setStatus(''), 5000);
+    }
+  };
+
   return (
     <section id="contact" className="py-24 relative">
       <div className="container mx-auto px-6 md:px-12">
@@ -75,15 +110,17 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="md:col-span-3 bg-[var(--color-brand-card)] p-8 rounded-2xl border border-gray-800"
           >
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Your Name</label>
                   <input 
                     type="text" 
                     id="name" 
+                    name="name"
+                    required
                     className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-brand-creme)] focus:ring-1 focus:ring-[var(--color-brand-creme)] transition-colors"
-                    placeholder="John Doe"
+                    placeholder="Name"
                   />
                 </div>
                 <div>
@@ -91,8 +128,10 @@ const Contact = () => {
                   <input 
                     type="email" 
                     id="email" 
+                    name="email"
+                    required
                     className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-brand-creme)] focus:ring-1 focus:ring-[var(--color-brand-creme)] transition-colors"
-                    placeholder="john@example.com"
+                    placeholder="name@gmail.com"
                   />
                 </div>
               </div>
@@ -102,6 +141,8 @@ const Contact = () => {
                 <input 
                   type="text" 
                   id="subject" 
+                  name="subject"
+                  required
                   className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-brand-creme)] focus:ring-1 focus:ring-[var(--color-brand-creme)] transition-colors"
                   placeholder="Hello!"
                 />
@@ -111,18 +152,28 @@ const Contact = () => {
                 <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">Message</label>
                 <textarea 
                   id="message" 
+                  name="message"
                   rows="5"
+                  required
                   className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-brand-creme)] focus:ring-1 focus:ring-[var(--color-brand-creme)] transition-colors resize-none"
-                  placeholder="I'd like to discuss a project..."
+                  placeholder="Your message"
                 ></textarea>
               </div>
 
               <button 
                 type="submit"
-                className="w-full py-4 bg-[var(--color-brand-creme)] text-black font-semibold rounded-lg hover:bg-white transition-colors"
+                disabled={status === 'loading'}
+                className="w-full py-4 bg-[var(--color-brand-creme)] text-black font-semibold rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Message
+                {status === 'loading' ? 'Sending...' : 'Send Message'}
               </button>
+
+              {status === 'success' && (
+                <p className="text-green-400 text-sm text-center mt-4 font-medium italic">Message sent successfully! I'll get back to you soon.</p>
+              )}
+              {status === 'error' && (
+                <p className="text-red-400 text-sm text-center mt-4 font-medium italic">Failed to send message. Please try emailing me directly.</p>
+              )}
             </form>
           </motion.div>
 
