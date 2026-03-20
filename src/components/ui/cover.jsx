@@ -4,10 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { SparklesCore } from "./sparkles";
 
-// Detect touch/mobile devices — hover effects crash on them
+// Only disable hover effect on true touch-only devices (phones/tablets).
+// "(hover: hover) and (pointer: fine)" is true for real mouse/trackpad users,
+// so we negate it — this correctly keeps the effect on touchscreen laptops too.
 const isTouchDevice = () =>
   typeof window !== "undefined" &&
-  (window.matchMedia("(hover: none)").matches || "ontouchstart" in window);
+  !window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 export const Cover = ({
   children,
