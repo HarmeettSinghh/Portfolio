@@ -4,40 +4,57 @@ import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { SparklesCore } from "./sparkles";
 
+// Detect touch/mobile devices — hover effects crash on them
+const isTouchDevice = () =>
+  typeof window !== "undefined" &&
+  (window.matchMedia("(hover: none)").matches || "ontouchstart" in window);
+
 export const Cover = ({
   children,
   className,
 }) => {
   const [hovered, setHovered] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
 
   const ref = useRef(null);
 
   const [containerWidth, setContainerWidth] = useState(0);
   const [beamPositions, setBeamPositions] = useState([]);
+  // Stable random values so they don't recalculate on every render
+  const beamRandomsRef = useRef([]);
+
+  useEffect(() => {
+    setIsTouch(isTouchDevice());
+  }, []);
 
   useEffect(() => {
     if (ref.current) {
       setContainerWidth(ref.current?.clientWidth ?? 0);
 
       const height = ref.current?.clientHeight ?? 0;
-      const numberOfBeams = Math.floor(height / 10); // Adjust the divisor to control the spacing
+      const numberOfBeams = Math.floor(height / 10);
       const positions = Array.from(
         { length: numberOfBeams },
         (_, i) => (i + 1) * (height / (numberOfBeams + 1))
       );
+      // Generate stable randoms once per beam set
+      beamRandomsRef.current = positions.map(() => ({
+        duration: Math.random() * 2 + 1,
+        delay: Math.random() * 2 + 1,
+      }));
       setBeamPositions(positions);
     }
   }, [ref.current]);
 
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => !isTouch && setHovered(true)}
+      onMouseLeave={() => !isTouch && setHovered(false)}
       ref={ref}
       className={cn("relative hover:bg-neutral-900 group/cover inline-block dark:bg-neutral-900 bg-neutral-100 px-2 py-2 transition duration-200 rounded-sm", className)}
     >
       <AnimatePresence>
-        {hovered && (
+        {hovered && !isTouch && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -82,12 +99,12 @@ export const Cover = ({
           </motion.div>
         )}
       </AnimatePresence>
-      {beamPositions.map((position, index) => (
+      {!isTouch && beamPositions.map((position, index) => (
         <Beam
           key={index}
           hovered={hovered}
-          duration={Math.random() * 2 + 1}
-          delay={Math.random() * 2 + 1}
+          duration={beamRandomsRef.current[index]?.duration ?? 2}
+          delay={beamRandomsRef.current[index]?.delay ?? 1}
           width={containerWidth}
           style={{
             top: `${position}px`,
@@ -97,9 +114,9 @@ export const Cover = ({
       <motion.span
         key={String(hovered)}
         animate={{
-          scale: hovered ? 0.8 : 1,
-          x: hovered ? [0, -30, 30, -30, 30, 0] : 0,
-          y: hovered ? [0, 30, -30, 30, -30, 0] : 0,
+          scale: hovered && !isTouch ? 0.8 : 1,
+          x: hovered && !isTouch ? [0, -30, 30, -30, 30, 0] : 0,
+          y: hovered && !isTouch ? [0, 30, -30, 30, -30, 0] : 0,
         }}
         exit={{
           filter: "none",
