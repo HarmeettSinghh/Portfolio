@@ -3,29 +3,9 @@ import { FaArrowDown } from 'react-icons/fa';
 import { Cover } from '../components/ui/cover';
 import devLoop from '../assets/mainvdo.mp4';
 import { useState, useEffect } from 'react';
+import DecryptedText from '../components/DecryptedText';
 
 const Home = () => {
-  const fullText = "Full Stack Software Engineer";
-  const [typedText, setTypedText] = useState("");
-
-  useEffect(() => {
-    // Wait for the Framer Motion fade-in to finish (0.1s delay + 0.8s duration = 900ms)
-    const startDelay = setTimeout(() => {
-      let currentIndex = 0;
-      const typingInterval = setInterval(() => {
-        if (currentIndex < fullText.length) {
-          setTypedText(fullText.slice(0, currentIndex + 1));
-          currentIndex++;
-        } else {
-          clearInterval(typingInterval);
-        }
-      }, 70);
-
-      return () => clearInterval(typingInterval);
-    }, 900);
-
-    return () => clearTimeout(startDelay);
-  }, []);
 
   return (
     <section
@@ -64,7 +44,13 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light mb-8"
             >
-              {typedText} <span className="cursor text-[var(--color-brand-creme)]">|</span>
+              <DecryptedText
+                text="Full Stack Web Developer"
+                animateOn="view"
+                revealDirection="start"
+                sequential
+                useOriginalCharsOnly={false}
+              />
             </motion.h2>
             <p className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto md:mx-0 mb-10 leading-relaxed">
               Somewhere between git init and git push lives every idea worth building. Code written deliberately, ruthlessly — with nothing wasted and nothing left broken.
