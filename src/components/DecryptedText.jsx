@@ -32,6 +32,7 @@ export default function DecryptedText({
   encryptedClassName = '',
   animateOn = 'hover',
   clickMode = 'once',
+  onAnimationDone,
   ...props
 }) {
   const [displayText, setDisplayText] = useState(text);
@@ -188,6 +189,7 @@ export default function DecryptedText({
               clearInterval(interval);
               setIsAnimating(false);
               setIsDecrypted(true);
+              if (onAnimationDone) onAnimationDone();
               return prevRevealed;
             }
           }
@@ -220,6 +222,7 @@ export default function DecryptedText({
               setIsAnimating(false);
               setDisplayText(text);
               setIsDecrypted(true);
+              if (onAnimationDone) onAnimationDone();
             }
             return prevRevealed;
           }
@@ -250,7 +253,7 @@ export default function DecryptedText({
     return () => clearInterval(interval);
   }, [
     isAnimating, text, speed, maxIterations, sequential, revealDirection, 
-    shuffleText, direction, fillAllIndices, removeRandomIndices, characters, useOriginalCharsOnly
+    shuffleText, direction, fillAllIndices, removeRandomIndices, characters, useOriginalCharsOnly, onAnimationDone
   ]);
 
   const handleClick = () => {

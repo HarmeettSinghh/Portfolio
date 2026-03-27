@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import DecryptedText from '../components/DecryptedText';
 
 const Home = () => {
+  const roles = ["Full Stack Web Developer", "Software Developer"];
+  const [roleIndex, setRoleIndex] = useState(0);
 
   return (
     <section
@@ -27,7 +29,9 @@ const Home = () => {
             transition={{ duration: 0.6 }}
           >
             <span className="text-[var(--color-brand-creme)] font-medium tracking-wider text-sm uppercase mb-4 block">
-              Welcome to my portfolio
+              It’s not who I am underneath,
+              BUT WHAT I DO
+              that defines me.
             </span>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -45,11 +49,17 @@ const Home = () => {
               className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light mb-8"
             >
               <DecryptedText
-                text="Full Stack Web Developer"
+                text={roles[roleIndex]}
+                key={roleIndex}
                 animateOn="view"
                 revealDirection="start"
                 sequential
                 useOriginalCharsOnly={false}
+                onAnimationDone={() => {
+                  setTimeout(() => {
+                    setRoleIndex((prev) => (prev + 1) % roles.length);
+                  }, 2500); // 2.5 second delay between switches
+                }}
               />
             </motion.h2>
             <p className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto md:mx-0 mb-10 leading-relaxed">

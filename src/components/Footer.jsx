@@ -32,7 +32,8 @@ const Footer = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-gray-500 text-sm font-light text-center"
         >
-          &copy; {currentYear} Developer Portfolio. Built with React & Tailwind CSS.
+          &copy; {currentYear} <span className="text-[var(--color-brand-creme)] font-medium">Harmeet Singh</span>. <br className="md:hidden" />
+          <span className="opacity-70">Built with logic & creativity.</span>
         </motion.p>
       </div>
     </footer>
