@@ -2,6 +2,8 @@ import SectionTitle from '../components/SectionTitle';
 import ProjectCard from '../components/ProjectCard';
 import spotImage from '../assets/spot.png';
 import luminaImage from '../assets/lumina.png';
+import mehfilImage from '../assets/mehfil.jpg';
+import linkEngineImage from '../assets/linkengine.jpg';
 
 const projectsData = [
   {
@@ -21,14 +23,21 @@ const projectsData = [
     liveLink: 'https://lumina-peace.vercel.app/',
   },
   {
-    title: 'AgenticAI Project',
-    description: 'An agentic AI system currently under active development. Stay tuned for updates.',
-    image: '',
+    title: 'Mehfil – Mood-Based Radio Web App',
+    description: 'A radio web application that curates and plays songs according to your vibe and mood.',
+    image: mehfilImage,
     techStack: [],
-    githubLink: 'https://github.com/HarmeettSinghh',
-    liveLink: null,
-    inProgress: true,
+    githubLink: 'https://github.com/HarmeettSinghh/Mehfil',
+    liveLink: 'https://mehfil-radio.vercel.app/',
   },
+  {
+    title: 'LinkEngine – URL Shortener & Analytics',
+    description: 'A robust URL shortener that provides detailed analytics for tracked links, built with Java and Spring Boot.',
+    image: linkEngineImage,
+    techStack: ['Java', 'Spring Boot'],
+    githubLink: 'https://github.com/HarmeettSinghh/LinkEngine',
+    liveLink: null,
+  }
 ];
 
 const Projects = () => {
