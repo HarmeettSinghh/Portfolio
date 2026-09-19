@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import SectionTitle from '../components/SectionTitle';
-
+import profileImage from '../assets/profile.jpg';
 const About = () => {
   return (
     <section id="about" className="py-24 relative">
@@ -24,10 +24,7 @@ const About = () => {
             <div className="absolute inset-0 bg-[var(--color-brand-creme)] rounded-2xl md:-right-4 md:-bottom-4 transform translate-x-3 translate-y-3 opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
             
             <div className="relative aspect-square md:aspect-[3/4] bg-gray-900 rounded-2xl overflow-hidden border border-gray-800">
-               {/* Replace with actual image src in production */}
-               <div className="w-full h-full flex flex-col items-center justify-center text-gray-700 bg-[var(--color-brand-card)]">
-                 <span className="font-heading text-xl font-bold bg-gray-800 p-8 rounded-full mb-4">Picture</span>
-               </div>
+               <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
             </div>
           </motion.div>
 

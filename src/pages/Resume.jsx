@@ -30,7 +30,7 @@ const Resume = () => {
           <motion.a 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            href="https://drive.google.com/file/d/1StX90PJ4MF8dUtl4NllvsW3sj2ASt-na/view?usp=drive_link" 
+            href="https://drive.google.com/drive/u/2/folders/14TdQ4wO3CqhUj7QDwfCCJs9lMqh9HwL8" 
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 bg-[var(--color-brand-creme)] text-black font-semibold rounded-full hover:bg-white transition-all shadow-lg shadow-[var(--color-brand-creme)]/10"

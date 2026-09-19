@@ -3,7 +3,7 @@ import ProjectCard from '../components/ProjectCard';
 import spotImage from '../assets/spot.png';
 import luminaImage from '../assets/lumina.png';
 import mehfilImage from '../assets/mehfil.jpg';
-import linkEngineImage from '../assets/linkengine.jpg';
+import linkEngineImage from '../assets/linkengine_new.png';
 
 const projectsData = [
   {
@@ -36,7 +36,7 @@ const projectsData = [
     image: linkEngineImage,
     techStack: ['Java', 'Spring Boot'],
     githubLink: 'https://github.com/HarmeettSinghh/LinkEngine',
-    liveLink: null,
+    liveLink: 'https://link-engine-seven.vercel.app/',
   }
 ];
 
